@@ -1,30 +1,67 @@
 // src/components/RegisterPage.tsx
 import React, { useState } from 'react';
+import styles from '../../styles/LoginForm.module.css';
+import countiesData from '../../assets/citiesData/_judete.json';
 
-interface RegisterFormData {
+// Interfaces for the data structures
+interface ICounty {
+    abr: string;
+    nume: string;
+}
+
+interface IFormData {
     username: string;
     email: string;
     password: string;
     confirmPassword: string;
+    county: string;
+    city: string;
 }
 
+interface IErrors {
+    [key: string]: string;
+}
+
+
 const RegisterPage: React.FC = () => {
-    const [formData, setFormData] = useState<RegisterFormData>({
+    const [cities, setCities] = useState([]);
+    const [formData, setFormData] = useState<IFormData>({
         username: '',
         email: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        county: '',
+        city: ''
     });
-    const [errors, setErrors] = useState<RegisterFormData>({
+    const [errors, setErrors] = useState<IFormData>({
         username: '',
         email: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        county: '',
+        city: ''
     });
+
+    const handleCountyChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedCounty = e.target.value;
+        setFormData({ ...formData, county: selectedCounty, city: '' }); // Reset city when county changes
+
+        if (selectedCounty) {
+            try {
+                // Dynamically import the cities data based on the selected county
+                const citiesData = await import(`../../assets/citiesData/${selectedCounty}.json`);
+                setCities(citiesData.default);
+            } catch (error) {
+                console.error('Failed to load city data:', error);
+                setCities([]);
+            }
+        }
+    };
+
 
     const validateForm = () => {
         let isValid = true;
-        let errors: RegisterFormData = { username: '', email: '', password: '', confirmPassword: '' };
+        let errors: IFormData = { username: '', email: '', password: '', confirmPassword: '', county: '', city: '' };
 
         if (!formData.username.trim()) {
             errors.username = 'Username is required';
@@ -48,6 +85,14 @@ const RegisterPage: React.FC = () => {
             errors.confirmPassword = 'Passwords do not match';
             isValid = false;
         }
+        if (!formData.county) {
+            errors.county = 'County is required';
+            isValid = false;
+        }
+        if (!formData.city) {
+            errors.city = 'City is required';
+            isValid = false;
+        }
 
         setErrors(errors);
         return isValid;
@@ -56,7 +101,6 @@ const RegisterPage: React.FC = () => {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (validateForm()) {
-            console.log('Submitting form', formData);
             try {
                 const response = await fetch('http://localhost/ConnectFest-api/users/create.php', {
                     method: 'POST',
@@ -65,12 +109,12 @@ const RegisterPage: React.FC = () => {
                     },
                     body: JSON.stringify(formData)
                 });
-                const data = await response.json();
-                if (response.ok) {
+    
+                if (response.ok && response.headers.get('Content-Type')?.includes('application/json')) {
                     alert('Registration successful!');
-                    console.log(data.message);
                 } else {
-                    throw new Error(data.message);
+                    const errorMessage = await response.text(); 
+                    throw new Error(errorMessage || 'Non-JSON error from server');
                 }
             } catch (error: any) {
                 console.error('Registration failed:', error);
@@ -79,6 +123,10 @@ const RegisterPage: React.FC = () => {
         }
     };
     
+
+    const handleCityChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
@@ -111,6 +159,28 @@ const RegisterPage: React.FC = () => {
                     <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} />
                     {errors.confirmPassword && <div style={{ color: 'red' }}>{errors.confirmPassword}</div>}
                 </div>
+                <div className={styles.dropdownContainer}>
+                <div>
+                    <label className={styles.label}>County:</label>
+                    <select name="county" value={formData.county} onChange={handleCountyChange} className={styles.dropdown}>
+                        <option value="">Select a county</option>
+                        {countiesData.map((county) => (
+                            <option key={county.abr} value={county.abr}>{county.nume}</option>
+                        ))}
+                    </select>
+                    {errors.county && <div style={{ color: 'red' }}>{errors.county}</div>}
+                </div>
+                <div>
+                    <label className={styles.label}>City:</label>
+                    <select name="city" value={formData.city} onChange={handleCityChange} className={styles.dropdown} disabled={!formData.county}>
+                        <option value="">Select a city</option>
+                        {cities.map((city) => (
+                            <option key={city} value={city}>{city}</option>
+                        ))}
+                    </select>
+                    {errors.city && <div style={{ color: 'red' }}>{errors.city}</div>}
+                </div>
+            </div>
                 <button type="submit">Register</button>
             </form>
         </div>

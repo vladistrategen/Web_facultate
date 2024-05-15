@@ -24,6 +24,9 @@ const HomePage: React.FC = () => {
     const [selectedEvent, setSelectedEvent] = useState<Option | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [searchTerm, setSearchTerm] = useState<string>('');
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); 
+    const [user, setUser] = useState<any>(null);
+    const [needsRefresh, setNeedsRefresh] = useState<boolean>(false); 
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -41,9 +44,18 @@ const HomePage: React.FC = () => {
                 setIsLoading(false);
             }
         };
-
+        setIsLoggedIn(!!localStorage.getItem('user')); 
+        const user = localStorage.getItem('user');
+        if (user) {
+            setUser(JSON.parse(user));
+        }
         fetchEvents();
-    }, [searchTerm]);
+
+        if (!localStorage.getItem('user')) {
+            navigate('/login'); 
+        }
+
+    }, [searchTerm, needsRefresh]);
 
     const handleLogout = () => {
         localStorage.removeItem('user'); // Remove user data from localStorage
@@ -85,31 +97,44 @@ const HomePage: React.FC = () => {
                     console.log(searchTerm),
                     <EventCard
                         key={event.id}
+                        eventId={event.id}
                         title={event.title}
                         date={event.date}
                         location={event.location}
                         description={event.description}
                         imageUrl={event.image_url}
+                        canEdit={isLoggedIn && user && user.isAdmin}
+                        onUpdate={(updatedEvent) => {setNeedsRefresh(true)}}
+                        onDelete={(deletedEventId) => {setNeedsRefresh(true)}}
                     />
                 ))
             ) : !selectedEvent ? events.map((event) => (
                 <EventCard
                     key={event.id}
-                    title={event.title}
+                        eventId={event.id}
+                        title={event.title}
                     date={event.date}
                     location={event.location}
                     description={event.description}
                     imageUrl={event.image_url}
-                />
+                    canEdit={isLoggedIn && user && user.isAdmin}
+                    onUpdate={(updatedEvent) => {setNeedsRefresh(true)}}
+                        onDelete={(deletedEventId) => {setNeedsRefresh(true)}}
+                    />
             ))
                 : events.filter(event => selectedEvent && event.id.toString() === selectedEvent.value).map((event) => (
                     <EventCard
                         key={event.id}
+                        eventId={event.id}
+
                         title={event.title}
                         date={event.date}
                         location={event.location}
                         description={event.description}
                         imageUrl={event.image_url}
+                        canEdit={isLoggedIn && user && user.isAdmin}
+                        onUpdate={(updatedEvent) => {setNeedsRefresh(true)}}
+                        onDelete={(deletedEventId) => {setNeedsRefresh(true)}}
                     />
                 ))
             }

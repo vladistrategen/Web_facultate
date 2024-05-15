@@ -1,43 +1,70 @@
-.loginContainer {
-    width: 100%;
-    max-width: 400px;
-    margin: 50px auto;
-    background-color: #fff;
+/* General body styling */
+body {
+    font-family: Arial, sans-serif; /* Clean font style */
+    background-color: #f4f4f4; /* Light grey background similar to the event page */
+    color: #333; /* Dark grey text color for readability */
+    margin: 0;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-.form {
-    display: flex;
-    flex-direction: column;
-}
-
-.inputGroup {
-    margin-bottom: 20px;
-}
-
-.label {
-    margin-bottom: 5px;
-}
-
-.input, .button {
-    height: 40px;
-    padding: 0 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.button {
-    background-color: #444;
-    color: white;
-    cursor: pointer;
-}
-
-.button:hover {
-    background-color: #555;
-}
-
-.error {
-    color: red;
+  }
+  
+  /* Style for all form containers */
+  .form-container {
+    background-color: white; /* White background for the form */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Subtle shadow */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px;
+    margin: auto;
+    max-width: 400px; /* Maximum width of the form */
+  }
+  
+  /* Styling labels for better typography */
+  label {
+    display: block;
     margin-bottom: 10px;
-}
+    font-weight: bold;
+  }
+  
+  /* Styling inputs */
+  input[type="text"], input[type="email"], input[type="password"] {
+    width: calc(100% - 22px); /* Full-width with padding adjustment */
+    padding: 10px;
+    margin-bottom: 15px; /* Space below each input */
+    border: 1px solid #ccc; /* Subtle border */
+    border-radius: 4px;
+  }
+  
+  /* Error message styling */
+  div.error {
+    color: red; /* Red color for errors */
+    margin-bottom: 10px; /* Space below error messages */
+  }
+  
+  /* Button styling */
+  button {
+    width: 100%;
+    padding: 10px;
+    background-color: #0056b3; /* Dark blue background */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #004494; /* Slightly darker blue on hover */
+  }
+  
+  .dropdownContainer {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    padding: 10px 0; 
+  }
+  
+  .dropdown {
+    margin-right: 20px; 
+  }
+  
+  .label {
+    margin-right: 10px; 
+  }
