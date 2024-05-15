@@ -27,7 +27,6 @@ const EventCard: React.FC<EventCardProps> = ({ title, date, location, descriptio
                 dragEnabled={true}
                 closeOnOutsideClick={true}
                 showCloseButton={true}
-                title={title}
                 width="80%"
                 height="80%"
                 maxHeight="80%"
@@ -35,7 +34,7 @@ const EventCard: React.FC<EventCardProps> = ({ title, date, location, descriptio
                 container="body" 
                 wrapperAttr={{ style: { padding: 20, backgroundColor: 'white' } }}
             >
-                <div style={{ textAlign: 'center' }}>
+                <div style={{ textAlign: 'center', background: 'grey', width: "100%", height: "100%"}}>
                     <img src={imageUrl} alt={title} style={{ width: "100%", maxHeight: "300px", objectFit: "cover" }} />
                     <p>{date} at {location}</p>
                     <p>{description}</p>

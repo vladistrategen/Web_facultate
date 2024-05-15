@@ -1,12 +1,12 @@
+// src/App.tsx
 import React from 'react';
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route
-} from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/ui/Header';
 import Footer from './components/ui/Footer';
-import HomePage from './components/ui/HomePage';
+import HomePage from './components/pages/HomePage';
+import LoginForm from './components/pages/LoginForm'; // Make sure to import the LoginForm
+import RegisterPage from './components/pages/RegisterPage';
+import AboutPage from './components/pages/AboutPage';
 
 const App: React.FC = () => {
   return (
@@ -15,8 +15,10 @@ const App: React.FC = () => {
         <Header />
         <main style={{ flex: 1 }}>
           <Routes>
-            <Route path="/" element={<HomePage />} />
-            {/* Add more routes here */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/about" element={<AboutPage />} />
           </Routes>
         </main>
         <Footer />
