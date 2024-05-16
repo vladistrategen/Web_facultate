@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import { useNavigate } from 'react-router-dom'; 
 import EventCard from '../common/EventCard';
-import Select from 'react-select'; // Import react-select
+import Select from 'react-select'; 
 import styles from '../../styles/EventCard.module.css';
 
 interface Event {
@@ -13,13 +13,13 @@ interface Event {
     image_url: string;
 }
 
-// Define the type for options used in react-select
 interface Option {
     value: string;
     label: string;
 }
 
 const HomePage: React.FC = () => {
+    const [allEvents, setAllEvents] = useState<Event[]>([]); 
     const [events, setEvents] = useState<Event[]>([]);
     const [selectedEvent, setSelectedEvent] = useState<Option | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -28,6 +28,7 @@ const HomePage: React.FC = () => {
     const [user, setUser] = useState<any>(null);
     const [needsRefresh, setNeedsRefresh] = useState<boolean>(false); 
     const navigate = useNavigate();
+    const [sortOption, setSortOption] = useState<Option | null>(null);
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -38,6 +39,7 @@ const HomePage: React.FC = () => {
                 }
                 const data: Event[] = await response.json();
                 setEvents(data);
+                setAllEvents(data);
             } catch (error) {
                 console.error('Error fetching data:', error);
             } finally {
@@ -54,24 +56,72 @@ const HomePage: React.FC = () => {
         if (!localStorage.getItem('user')) {
             navigate('/login'); 
         }
+        console.log("useeff")
+        sortEvents();
 
-    }, [searchTerm, needsRefresh]);
+    }, [searchTerm, needsRefresh, sortOption]);
 
-    const handleLogout = () => {
-        localStorage.removeItem('user'); // Remove user data from localStorage
-        navigate('/login'); // Redirect to login page after logout
+
+    const sortEvents = () => {
+        const sortedEvents = [...allEvents];
+        if (sortOption?.value === 'name') {
+            sortedEvents.sort((a, b) => a.title.localeCompare(b.title));
+        } else if (sortOption?.value === 'date') {
+            sortedEvents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        }
+        setEvents(sortedEvents);
     };
 
-    // Prepare options for the Select component
+    const sortOptions = [
+        { value: 'name', label: 'Sort by Name' },
+        { value: 'date', label: 'Sort by Date' }
+    ];
+
+    const handleSortChange = (option: Option | null) => {
+        setSortOption(option);
+    };
     const eventOptions = events.map(event => ({
         value: event.id.toString(),
         label: event.title
     }));
 
     const handleSelectChange = (option: Option | null) => {
-        // perform onclick for event card
         setSelectedEvent(option);
+    };
 
+    const addNewEvent = () => {
+        const newEvent: Event = {
+            id: Math.max(...events.map(event => event.id)) + 1,
+            title: '',
+            date: '',
+            location: '',
+            description: '',
+            image_url: 'https://picsum.photos/200' + (Math.max(...events.map(event => event.id)) + 1).toString()[0]
+        };
+        const createEvent = async () => {
+            try{
+                
+                const response = await fetch('http://localhost/ConnectFest-api/products/create.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newEvent)
+                });
+                if (response.ok) {
+                    setNeedsRefresh(true);
+                } else {
+                    alert('Failed to create the event.');
+                }
+            }
+            catch (error) {
+                console.error('Error creating event:', error);
+            }
+            finally {
+                setNeedsRefresh(true);
+            }
+        }
+        createEvent();
     };
 
     return (
@@ -88,7 +138,18 @@ const HomePage: React.FC = () => {
                     isSearchable={true}
                     onInputChange={(inputValue) => setSearchTerm(inputValue)}
                 />
-                <button onClick={handleLogout} style={{ float: 'right', marginRight: '20px', marginTop: '20px' }}>Logout</button>
+                <Select
+                options={sortOptions}
+                onChange={handleSortChange}
+                value={sortOption}
+                placeholder="Sort Events..."
+                className="sort-select"
+                isClearable={true}
+            />
+            <button style={{ backgroundColor: 'green', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', margin: '10px' }}
+                        onClick={addNewEvent}>
+                    + Add New Event
+                </button>
             </div>
             {isLoading ? (
                 <p>Loading events...</p>
@@ -119,7 +180,7 @@ const HomePage: React.FC = () => {
                     imageUrl={event.image_url}
                     canEdit={isLoggedIn && user && user.isAdmin}
                     onUpdate={(updatedEvent) => {setNeedsRefresh(true)}}
-                        onDelete={(deletedEventId) => {setNeedsRefresh(true)}}
+                    onDelete={(deletedEventId) => {setNeedsRefresh(true)}}
                     />
             ))
                 : events.filter(event => selectedEvent && event.id.toString() === selectedEvent.value).map((event) => (

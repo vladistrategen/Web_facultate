@@ -1,8 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 const AboutPage: React.FC = () => {
+    const [viewMore, setViewMore] = useState(false);
+
+    const toggleViewMore = () => {
+        setViewMore(!viewMore);
+    };
+
+    useEffect(() => {
+    }, [viewMore]);
     return (
-        <main style={{ padding: '20px' }}>  {/* Use of <main> for main content */}
+        <main style={{ padding: '20px' }}>  
             <header>
                 <h1>About Us</h1>
             </header>
@@ -34,7 +42,7 @@ const AboutPage: React.FC = () => {
                             </li>
                         </ul>
                     </address>
-                    
+
                 </section>
             </article>
             <aside>
@@ -47,33 +55,96 @@ const AboutPage: React.FC = () => {
             <section>
 
                 <h2>Our Team</h2>
-                <table>
-                    <tr>
-                        <th>Name</th>
-                        <th>Role</th>
-                        <th>Email</th>
+                <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+                    <tr >
+                        <th style={{ border: '1px solid black' }}>Name</th>
+                        <th style={{ border: '1px solid black' }}>Role</th>
+                        <th style={{ border: '1px solid black' }}>Contact</th>
                     </tr>
-                    <tr>
+                    <tr style={{ border: '1px solid black' }}>
                         <td>Vlad Istrate</td>
-                        <td>CEO</td>
-                        <td><a href="mailto:J@D.com">email</a></td>
+                        <td style={{ border: '1px solid black' }}>
+                            <table>
+                                <tr style={{ border: '1px solid black' }}>
+                                    <td>CEO</td>
+                                </tr>
+                                <tr style={{ border: '1px solid black' }}> 
+                                    <td>CTO</td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td ><table>
+
+                            <tr> <a href="mailto:contact@example.com">contact@example.com</a><br /></tr>
+
+                            <tr> <a href="tel:+11234567890">123-456-7890</a></tr>
+                        </table></td>
                     </tr>
-                    <tr>
-                        <td>Vlad Istrate</td>
-                        <td>CTO</td>
-                        <td><a href="mailto:J@S.com">email</a></td>
+                    <tr style={{ border: '1px solid black' }}>
+                        <td>Coechipier 1</td>
+                        <td style={{ border: '1px solid black' }}>
+                            <table>
+                                <tr>
+                                    <td>COO</td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td><table>
+
+                            <tr> <a href="mailto:contact@example.com">contact@example.com</a><br /></tr>
+
+                            <tr> <a href="tel:+11234567890">123-456-7890</a></tr>
+                        </table></td>
+                    </tr>
+                    <tr style={{ border: '1px solid black' }}>
+                        <td>Coechipier 2</td>
+                        <td style={{ border: '1px solid black' }}>
+                            <table>
+                                <tr style={{ border: '1px solid black' }}>
+                                    <td>Chief Designer</td>
+                                </tr>
+                                <tr style={{ border: '1px solid black' }}>
+                                    <td>Product Manager</td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <table>
+
+                                <tr> <a href="mailto:contact@example.com">contact@example.com</a><br /></tr>
+
+                                <tr> <a href="tel:+11234567890">123-456-7890</a></tr>
+                            </table>
+                        </td>
                     </tr>
                 </table>
+
 
 
                 <a href="https://media.istockphoto.com/id/1169564891/ro/fotografie/%C3%AEnt%C3%A2lnire-de-afaceri-de-birou-conferin%C8%9B%C4%83-lucru-%C3%AEn-echip%C4%83.jpg?s=1024x1024&w=is&k=20&c=Qf2ulcrfjSpTYiQypzuLp32Sam-SG2Sg7j8b8NB1ASo=" target="_blank">
                     <img src="https://media.istockphoto.com/id/1169564891/ro/fotografie/%C3%AEnt%C3%A2lnire-de-afaceri-de-birou-conferin%C8%9B%C4%83-lucru-%C3%AEn-echip%C4%83.jpg?s=1024x1024&w=is&k=20&c=Qf2ulcrfjSpTYiQypzuLp32Sam-SG2Sg7j8b8NB1ASo=" alt="random" />
                 </a>
-                
-                
+
+
 
             </section>
-            
+            <section>
+                <h2>Our Services</h2>
+                <ul>
+                    <li>Web Development</li>
+                    <li>Mobile Development</li>
+                    {viewMore && (
+                        <>
+                            <li>SEO</li>
+                            <li>UI/UX Design</li>
+                            <li>Consulting</li>
+                        </>
+                    )}
+                    <button onClick={toggleViewMore}>
+                        {viewMore ? 'View less' : 'View more'}
+                    </button>
+                </ul>
+            </section>
         </main>
     );
 };

@@ -10,8 +10,8 @@ type EventCardProps = {
     description: string;
     imageUrl: string;
     canEdit: boolean;
-    onDelete: (id: number) => void; // Function to handle deletion
-    onUpdate: (event: Event) => void; // Function to handle update
+    onDelete: (id: number) => void; 
+    onUpdate: (event: Event) => void; 
 };
 
 interface Event {
@@ -29,7 +29,7 @@ const EventCard: React.FC<EventCardProps> = ({eventId, title, date, location, de
 
     const togglePopup = () => { if (!editVisible) setVisible(!visible)};
     const toggleEditPopup = () => setEditVisible(!editVisible);
-    const editEvent = () => setEditVisible(true); // Open the edit popup
+    const editEvent = () => setEditVisible(true); 
     const deleteEvent = () => alert('Delete Event Functionality Placeholder');
     const [formData, setFormData] = useState({
         id : eventId,
@@ -58,7 +58,7 @@ const EventCard: React.FC<EventCardProps> = ({eventId, title, date, location, de
 
         if (response.ok) {
             onUpdate(updatedEvent);
-            toggleEditPopup(); // Close the edit popup on success
+            toggleEditPopup(); 
         } else {
             alert('Failed to update the event.');
         }

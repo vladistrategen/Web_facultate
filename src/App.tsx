@@ -1,10 +1,9 @@
-// src/App.tsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/ui/Header';
 import Footer from './components/ui/Footer';
 import HomePage from './components/pages/HomePage';
-import LoginForm from './components/pages/LoginForm'; // Make sure to import the LoginForm
+import LoginForm from './components/pages/LoginForm'; 
 import RegisterPage from './components/pages/RegisterPage';
 import AboutPage from './components/pages/AboutPage';
 

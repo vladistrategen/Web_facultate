@@ -1,9 +1,7 @@
-// src/components/RegisterPage.tsx
 import React, { useState } from 'react';
 import styles from '../../styles/LoginForm.module.css';
 import countiesData from '../../assets/citiesData/_judete.json';
 
-// Interfaces for the data structures
 interface ICounty {
     abr: string;
     nume: string;
@@ -44,11 +42,10 @@ const RegisterPage: React.FC = () => {
 
     const handleCountyChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedCounty = e.target.value;
-        setFormData({ ...formData, county: selectedCounty, city: '' }); // Reset city when county changes
+        setFormData({ ...formData, county: selectedCounty, city: '' }); 
 
         if (selectedCounty) {
             try {
-                // Dynamically import the cities data based on the selected county
                 const citiesData = await import(`../../assets/citiesData/${selectedCounty}.json`);
                 setCities(citiesData.default);
             } catch (error) {
